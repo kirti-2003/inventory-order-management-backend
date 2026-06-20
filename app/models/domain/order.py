@@ -6,7 +6,7 @@ from sqlalchemy import (
     Integer,
     ForeignKey
 )
-from sqlalchemy.dialects.postgresql import UUID
+
 from sqlalchemy.orm import relationship
 
 from app.config.database import Base
@@ -15,16 +15,16 @@ from app.config.database import Base
 class Order(Base):
     __tablename__ = "orders"
 
-    order_id = Column(UUID(as_uuid=True), primary_key=True)
+    order_id = Column(String(80), primary_key=True)
 
     company_id = Column(
-        UUID(as_uuid=True),
+        String(80),
         ForeignKey("companies.company_id"),
         nullable=False
     )
 
     customer_id = Column(
-        UUID(as_uuid=True),
+        String(80),
         ForeignKey("customers.customer_id"),
         nullable=False
     )
@@ -58,16 +58,16 @@ class Order(Base):
 class OrderItem(Base):
     __tablename__ = "order_items"
 
-    order_item_id = Column(UUID(as_uuid=True), primary_key=True)
+    order_item_id = Column(String(80), primary_key=True)
 
     order_id = Column(
-        UUID(as_uuid=True),
+        String(80),
         ForeignKey("orders.order_id"),
         nullable=False
     )
 
     product_id = Column(
-        UUID(as_uuid=True),
+        String(80),
         ForeignKey("products.product_id"),
         nullable=False
     )

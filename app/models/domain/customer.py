@@ -6,7 +6,6 @@ from sqlalchemy import (
     Text,
     ForeignKey
 )
-from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 
 from app.config.database import Base
@@ -15,10 +14,10 @@ from app.config.database import Base
 class Customer(Base):
     __tablename__ = "customers"
 
-    customer_id = Column(UUID(as_uuid=True), primary_key=True)
+    customer_id = Column(String(80), primary_key=True)
 
     company_id = Column(
-        UUID(as_uuid=True),
+        String(80),
         ForeignKey("companies.company_id"),
         nullable=False
     )

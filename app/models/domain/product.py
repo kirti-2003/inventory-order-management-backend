@@ -6,9 +6,9 @@ from sqlalchemy import (
     Text,
     Numeric,
     Integer,
-    ForeignKey
+    ForeignKey,
+    UniqueConstraint,
 )
-from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 
 from app.config.database import Base
@@ -17,10 +17,14 @@ from app.config.database import Base
 class Product(Base):
     __tablename__ = "products"
 
-    product_id = Column(UUID(as_uuid=True), primary_key=True)
+    __table_args__ = (
+        UniqueConstraint("company_id", "sku", name="unique_company_sku"),
+    )
+
+    product_id = Column(String(80), primary_key=True)
 
     company_id = Column(
-        UUID(as_uuid=True),
+        String(80),
         ForeignKey("companies.company_id"),
         nullable=False
     )

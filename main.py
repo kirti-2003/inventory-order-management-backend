@@ -1,5 +1,7 @@
 from fastapi import FastAPI
 from app.config.settings import settings
+from app.routes import product_routes
+
 
 
 app = FastAPI(
@@ -14,3 +16,4 @@ def root():
         "status": "success",
         "message": "Inventory Order Management API is running"
     }
+app.include_router(product_routes.router)

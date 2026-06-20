@@ -21,11 +21,10 @@ depends_on: Union[str, Sequence[str], None] = None
 def upgrade() :
     """Upgrade schema."""
 
-    op.execute('CREATE EXTENSION IF NOT EXISTS "pgcrypto";')
 
     op.create_table(
         "companies",
-        sa.Column("company_id", sa.UUID(), primary_key=True, server_default=sa.text("gen_random_uuid()")),
+        sa.Column("company_id", sa.String(length=80), primary_key=True),
         sa.Column("company_name", sa.String(length=150), nullable=False),
         sa.Column("email", sa.String(length=150), nullable=True, unique=True),
         sa.Column("phone", sa.String(length=20), nullable=True),
@@ -37,8 +36,8 @@ def upgrade() :
 
     op.create_table(
         "products",
-        sa.Column("product_id", sa.UUID(), primary_key=True, server_default=sa.text("gen_random_uuid()")),
-        sa.Column("company_id", sa.UUID(), sa.ForeignKey("companies.company_id", ondelete="CASCADE"), nullable=False),
+        sa.Column("product_id", sa.String(length=80), primary_key=True),
+        sa.Column("company_id", sa.String(length=80), sa.ForeignKey("companies.company_id", ondelete="CASCADE"), nullable=False),
         sa.Column("product_name", sa.String(length=150), nullable=False),
         sa.Column("sku", sa.String(length=100), nullable=False),
         sa.Column("description", sa.Text(), nullable=True),
@@ -55,8 +54,8 @@ def upgrade() :
 
     op.create_table(
         "customers",
-        sa.Column("customer_id", sa.UUID(), primary_key=True, server_default=sa.text("gen_random_uuid()")),
-        sa.Column("company_id", sa.UUID(), sa.ForeignKey("companies.company_id", ondelete="CASCADE"), nullable=False),
+        sa.Column("customer_id", sa.String(length=80), primary_key=True),
+        sa.Column("company_id", sa.String(length=80), sa.ForeignKey("companies.company_id", ondelete="CASCADE"), nullable=False),
         sa.Column("full_name", sa.String(length=150), nullable=False),
         sa.Column("email", sa.String(length=150), nullable=False),
         sa.Column("phone", sa.String(length=20), nullable=True),
@@ -69,9 +68,9 @@ def upgrade() :
 
     op.create_table(
         "orders",
-        sa.Column("order_id", sa.UUID(), primary_key=True, server_default=sa.text("gen_random_uuid()")),
-        sa.Column("company_id", sa.UUID(), sa.ForeignKey("companies.company_id", ondelete="CASCADE"), nullable=False),
-        sa.Column("customer_id", sa.UUID(), sa.ForeignKey("customers.customer_id"), nullable=False),
+        sa.Column("order_id", sa.String(length=80), primary_key=True),
+        sa.Column("company_id", sa.String(length=80), sa.ForeignKey("companies.company_id", ondelete="CASCADE"), nullable=False),
+        sa.Column("customer_id", sa.String(length=80), sa.ForeignKey("customers.customer_id"), nullable=False),
         sa.Column("order_number", sa.String(length=50), nullable=False),
         sa.Column("total_amount", sa.Numeric(12, 2), nullable=False, server_default=sa.text("0")),
         sa.Column("status", sa.String(length=30), nullable=False, server_default=sa.text("'PLACED'")),
@@ -83,9 +82,9 @@ def upgrade() :
 
     op.create_table(
         "order_items",
-        sa.Column("order_item_id", sa.UUID(), primary_key=True, server_default=sa.text("gen_random_uuid()")),
-        sa.Column("order_id", sa.UUID(), sa.ForeignKey("orders.order_id", ondelete="CASCADE"), nullable=False),
-        sa.Column("product_id", sa.UUID(), sa.ForeignKey("products.product_id"), nullable=False),
+        sa.Column("order_item_id", sa.String(length=80), primary_key=True),
+        sa.Column("order_id", sa.String(length=80), sa.ForeignKey("orders.order_id", ondelete="CASCADE"), nullable=False),
+        sa.Column("product_id", sa.String(length=80), sa.ForeignKey("products.product_id"), nullable=False),
         sa.Column("quantity", sa.Integer(), nullable=False),
         sa.Column("unit_price", sa.Numeric(12, 2), nullable=False),
         sa.Column("line_total", sa.Numeric(12, 2), nullable=False),
@@ -97,13 +96,13 @@ def upgrade() :
 
     op.create_table(
         "inventory_transactions",
-        sa.Column("transaction_id", sa.UUID(), primary_key=True, server_default=sa.text("gen_random_uuid()")),
-        sa.Column("company_id", sa.UUID(), sa.ForeignKey("companies.company_id", ondelete="CASCADE"), nullable=False),
-        sa.Column("product_id", sa.UUID(), sa.ForeignKey("products.product_id"), nullable=False),
+        sa.Column("transaction_id", sa.String(length=80), primary_key=True),
+        sa.Column("company_id", sa.String(length=80), sa.ForeignKey("companies.company_id", ondelete="CASCADE"), nullable=False),
+        sa.Column("product_id", sa.String(length=80), sa.ForeignKey("products.product_id"), nullable=False),
         sa.Column("transaction_type", sa.String(length=30), nullable=False),
         sa.Column("quantity", sa.Integer(), nullable=False),
         sa.Column("reference_type", sa.String(length=50), nullable=True),
-        sa.Column("reference_id", sa.UUID(), nullable=True),
+        sa.Column("reference_id", sa.String(length=80), nullable=True),
         sa.Column("remarks", sa.Text(), nullable=True),
         sa.Column("created_at", sa.DateTime(), server_default=sa.text("CURRENT_TIMESTAMP")),
         sa.CheckConstraint(

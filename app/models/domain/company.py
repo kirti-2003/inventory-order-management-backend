@@ -1,5 +1,4 @@
 from sqlalchemy import Column, String, Boolean, DateTime, Text
-from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 
 from app.config.database import Base
@@ -8,7 +7,7 @@ from app.config.database import Base
 class Company(Base):
     __tablename__ = "companies"
 
-    company_id = Column(UUID(as_uuid=True), primary_key=True)
+    company_id = Column(String(80), primary_key=True)
 
     company_name = Column(String(150), nullable=False)
     email = Column(String(150), unique=True)
