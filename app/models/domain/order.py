@@ -51,7 +51,8 @@ class Order(Base):
 
     order_items = relationship(
         "OrderItem",
-        back_populates="order"
+        back_populates="order",
+        cascade="all, delete-orphan"
     )
 
 

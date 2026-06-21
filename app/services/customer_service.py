@@ -1,33 +1,50 @@
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
+from datetime import datetime
 
+from app.models.domain.customer import Customer
 from app.models.schemas.customer_schema import CustomerCreate
-from app.repositories import customer_repository
+from app.repositories.customer_repository import CustomerRepository
+from app.utils.id_generator import generate_customer_id
 
 
-def create_customer_service(db: Session, customer_data: CustomerCreate):
-    return customer_repository.create_customer(db, customer_data)
+class CustomerService:
 
+    def __init__(self):
+        self.repo = CustomerRepository()
 
-def get_all_customers_service(db: Session):
-    return customer_repository.get_all_customers(db)
+    def create_customer(self, db: Session, customer_data: CustomerCreate):
+        customer = Customer(
+            customer_id=generate_customer_id(),
+            company_id=customer_data.company_id,
+            full_name=customer_data.full_name,
+            email=customer_data.email,
+            phone=customer_data.phone,
+            address=customer_data.address,
+            is_active=True,
+            created_at=datetime.utcnow(),
+            updated_at=datetime.utcnow()
+        )
 
+        return self.repo.create_customer(db, customer)
 
-def get_customer_by_id_service(db: Session, customer_id: str):
-    customer = customer_repository.get_customer_by_id(db, customer_id)
+    def get_all_customers(self, db: Session):
+        return self.repo.get_all_customers(db)
 
-    if not customer:
-        raise HTTPException(status_code=404, detail="Customer not found")
+    def get_customer_by_id(self, db: Session, customer_id: str):
+        customer = self.repo.get_customer_by_id(db, customer_id)
 
-    return customer
+        if not customer:
+            raise HTTPException(status_code=404, detail="Customer not found")
 
+        return customer
 
-def delete_customer_service(db: Session, customer_id: str):
-    customer = customer_repository.delete_customer(db, customer_id)
+    def delete_customer(self, db: Session, customer_id: str):
+        customer = self.repo.delete_customer(db, customer_id)
 
-    if not customer:
-        raise HTTPException(status_code=404, detail="Customer not found")
+        if not customer:
+            raise HTTPException(status_code=404, detail="Customer not found")
 
-    return {
-        "message": "Customer deleted successfully"
-    }
+        return {
+            "message": "Customer deleted successfully"
+        }

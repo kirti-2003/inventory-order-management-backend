@@ -1,10 +1,12 @@
 from fastapi import FastAPI
 from app.config.settings import settings
+from app.models.domain import *
 from app.routes import(
     product_routes,
-    customer_routes
-)
+    customer_routes,
+    order_routes
 
+)
 
 
 app = FastAPI(
@@ -21,3 +23,4 @@ def root():
     }
 app.include_router(product_routes.router)
 app.include_router(customer_routes.router)
+app.include_router(order_routes.router)
