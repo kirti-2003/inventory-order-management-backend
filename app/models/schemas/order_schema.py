@@ -10,7 +10,7 @@ class OrderItemCreate(BaseModel):
 
 
 class OrderCreate(BaseModel):
-    company_id: str
+    company_id: str = "COMP_00001"
     customer_id: str
     items: List[OrderItemCreate]
 
@@ -18,6 +18,7 @@ class OrderCreate(BaseModel):
 class OrderItemResponse(BaseModel):
     order_item_id: str
     product_id: str
+    product_name: Optional[str] = None
     quantity: int
     unit_price: Decimal
     line_total: Decimal
@@ -31,6 +32,7 @@ class OrderResponse(BaseModel):
     order_id: str
     company_id: str
     customer_id: str
+    customer_name: Optional[str] = None
     order_number: str
     total_amount: Decimal
     status: str

@@ -4,6 +4,7 @@ from app.models.domain.order import Order, OrderItem
 from app.models.domain.customer import Customer
 from app.models.domain.product import Product
 from app.models.domain.company import Company
+from sqlalchemy.orm import joinedload
 
 
 class OrderRepository:
@@ -34,12 +35,25 @@ class OrderRepository:
         return order_item
 
     def get_all_orders(self, db: Session):
-        return db.query(Order).all()
+        return (
+            db.query(Order)
+            .options(
+                joinedload(Order.customer),
+                joinedload(Order.order_items).joinedload(OrderItem.product)
+            )
+            .all()
+        )
 
     def get_order_by_id(self, db: Session, order_id: str):
-        return db.query(Order).filter(
-            Order.order_id == order_id
-        ).first()
+        return (
+            db.query(Order)
+            .options(
+                joinedload(Order.customer),
+                joinedload(Order.order_items).joinedload(OrderItem.product)
+            )
+            .filter(Order.order_id == order_id)
+            .first()
+        )
 
     def cancel_order(self, db: Session, order: Order):
         order.status = "CANCELLED"

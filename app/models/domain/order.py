@@ -55,6 +55,10 @@ class Order(Base):
         cascade="all, delete-orphan"
     )
 
+    @property
+    def customer_name(self):
+        return self.customer.full_name if self.customer else None
+
 
 class OrderItem(Base):
     __tablename__ = "order_items"
@@ -90,3 +94,7 @@ class OrderItem(Base):
         "Product",
         back_populates="order_items"
     )
+
+    @property
+    def product_name(self):
+        return self.product.product_name if self.product else None

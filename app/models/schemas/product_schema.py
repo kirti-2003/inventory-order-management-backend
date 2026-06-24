@@ -4,7 +4,7 @@ from decimal import Decimal
 
 
 class ProductCreate(BaseModel):
-    company_id: str
+    company_id: str = "COMP_00001"
     product_name: str = Field(..., min_length=2)
     sku: str = Field(..., min_length=2)
     description: Optional[str] = None
